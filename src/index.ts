@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as bdscoreVersion from "@the-bds-maneger/server_versions";
 import { CronJob } from "cron";
-import * as BdsTypes from "@the-bds-maneger/core/globalType";
+import * as BdsTypes from "@the-bds-maneger/core/src/globalType";
 import * as BdsCore from "@the-bds-maneger/core";
 
 const PLATFORM = (process.env.PLATFORM||"bedrock") as BdsTypes.Platform;
