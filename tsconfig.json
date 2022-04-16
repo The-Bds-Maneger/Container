@@ -1,0 +1,21 @@
+{
+  "include": ["src/"],
+  "exclude": ["node_modules/"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "declaration": true,
+    "strict": false,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "target": "ES6",
+    "paths": {
+      "@/*": ["./node_modules/@*"]
+    }
+  }
+}

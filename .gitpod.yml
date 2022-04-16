@@ -1,0 +1,8 @@
+tasks:
+  - init: npm install
+ports:
+  - port: 3000
+    visibility: public
+    onOpen: ignore
+  - port: 19132
+    visibility: public
