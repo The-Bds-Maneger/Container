@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/The-Bds-Maneger/Container#readme",
   "dependencies": {
-    "@the-bds-maneger/core": "^21.193.214",
+    "@the-bds-maneger/core": "^21.769.27",
     "@the-bds-maneger/server_versions": "^2.0.2",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
