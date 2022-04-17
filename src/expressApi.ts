@@ -2,6 +2,9 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import express_rate_limit from "express-rate-limit";
 import { getSession } from "./start";
+import { Backup } from "@the-bds-maneger/core";
+import path from "path";
+import fs from "fs";
 
 // Create Express API
 const app = express();
@@ -27,15 +30,13 @@ const defaultRateLimit = express_rate_limit({
   max: 250,
 });
 const auth = (req: Request, res: Response, next: NextFunction)=>{
-  const session = (req["session"]||{});
-  if(!session.user) {
-    if(req.headers.authorization) {
-      const auth_stuff = Buffer.from(req.headers.authorization.split(" ")[1], "base64")
-      const [user, password] = auth_stuff.toString().split(":")
-      if(user === process.env.AUTH_USER && password === process.env.AUTH_PASSWORD) {
-        session.user = process.env.AUTH_USER
-        return next();
-      }
+  if(req.headers.authorization) {
+    const auth_stuff = Buffer.from(req.headers.authorization.split(" ")[1], "base64")
+    const [user, password] = auth_stuff.toString().split(":")
+    if(user === process.env.AUTH_USER && password === process.env.AUTH_PASSWORD) return next();
+    else {
+      res.setHeader("WWW-Authenticate", "Basic realm=\"Auth Failed\"");
+      return;
     }
   }
   res.setHeader("WWW-Authenticate", "Basic")
@@ -51,13 +52,35 @@ app.get("/", ({res}) => {
   });
 });
 
+// Get Log
+app.get("/log", auth, ({res}) => {
+  res.setHeader("Content-Type", "text/plain");
+  const logs = fs.readdirSync(process.env.LOG_PATH).slice(5).map(file => ({
+    file,
+    content: Buffer.from(fs.readFileSync(path.join(process.env.LOG_PATH, file), "utf8")).toString("base64")
+  }));
+  res.json(logs);
+  return;
+});
+
+// Backup
+app.get("/backup", auth, async ({res}) => {
+  const fileName = (`${new Date().toString().replace(/[-\(\)\:\s+]/gi, "_")}.zip`).replace(/__/gi, "_");
+  res.setHeader("Content-disposition", "attachment; filename="+fileName);
+  res.setHeader("FileName", fileName);
+  res.setHeader("Content-type", "application/zip");
+  res.send(await Backup.CreateBackup(false));
+  return;
+});
+
 // Player
 app.get("/player", defaultRateLimit, ({res}) => res.json((getSession()).getPlayer()));
 
 // Command
 const Commands = [];
-app.route("/command").get(defaultRateLimit, ({res}) => res.json(Commands)).post(auth, (req, res) => {
+app.route("/command").get(auth, ({res}) => res.sendFile(path.join(__dirname, "../expressApiPages/command.html"))).post(auth, (req, res) => {
   const Command: string = req.body.command;
+  const returnPage = req.body.return === "true";
   if(!Command) {
     res.status(400).json({error: "No command specified."});
     return;
@@ -67,6 +90,7 @@ app.route("/command").get(defaultRateLimit, ({res}) => res.json(Commands)).post(
     command: Command,
   });
   (getSession()).commands.execCommand(Command);
-  res.sendStatus(200);
+  if (returnPage) res.redirect("/command");
+  else res.sendStatus(200);
   return;
 });

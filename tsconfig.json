@@ -15,7 +15,8 @@
     "allowJs": true,
     "target": "ES6",
     "paths": {
-      "@/*": ["./node_modules/@*"]
+      "@/*": ["./node_modules/@*"],
+      "@*": ["./node_modules/@*"]
     }
   }
 }
