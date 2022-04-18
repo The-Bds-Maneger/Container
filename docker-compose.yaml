@@ -1,6 +1,7 @@
 version: "3.9"
 volumes:
-  BdsManegerData:
+  Worlds:
+  Logs:
 services:
   bdscore:
     container_name: bds_maneger_core
@@ -8,7 +9,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - BdsManegerData:/data
+      - Worlds:/data/worlds
+      - Logs:/data/logs
     environment:
       DESCRIPTION: "Docker Test"
       WORLD_NAME: "Docker Run Test"
@@ -18,6 +20,7 @@ services:
       PLAYERS: "5"
       BDS_VERSION: "latest"
       SERVER: "bedrock"
+      CRON_BACKUP: "*/1 * * * *"
     ports:
       - 3000:3000/tcp
       - 19132:19132/udp

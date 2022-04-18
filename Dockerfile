@@ -49,25 +49,35 @@ EXPOSE 25565/tcp
 EXPOSE 25566/tcp
 
 # Default ENVs
-ENV WORLD_STORAGE="/data/worlds"
-ENV BACKUP_PATH="/data/backups"
-ENV LOG_PATH="/data/logs"
-ENV EXTRA_PATH="/data/extra"
+ENV \
+WORLD_STORAGE="/data/worlds" \
+BACKUP_PATH="/data/backups" \
+LOG_PATH="/data/logs" \
+EXTRA_PATH="/data/extra"
 
 # Server Settings
-ENV DESCRIPTION="My Sample Server"
-ENV WORLD_NAME="My Map"
-ENV GAMEMODE="survival"
-ENV DIFFICULTY="normal"
-ENV MAXPLAYERS="5"
-ENV REQUIRED_LOGIN="false"
-ENV ALLOW_COMMADS="false"
+ENV \
+DESCRIPTION="My Sample Server" \
+WORLD_NAME="My Map" \
+GAMEMODE="survival" \
+DIFFICULTY="normal" \
+MAXPLAYERS="5" \
+REQUIRED_LOGIN="false" \
+ALLOW_COMMADS="false"
+
+# Backup
+ENV \
+CRON_BACKUP="0 0 * * *" \
+BACKUP_GIT_REPO="" \
+BACKUP_GIT_USERNAME="" \
+BACKUP_GIT_PASSTOKEN=""
 
 # Bds Core Settings
-ENV VERSION="latest"
-ENV PLATFORM="bedrock"
-ENV AUTH_USER="admin"
-ENV AUTH_PASSWORD="admin"
+ENV \
+VERSION="latest" \
+PLATFORM="bedrock" \
+AUTH_USER="admin" \
+AUTH_PASSWORD="admin"
 
 STOPSIGNAL SIGTERM
 WORKDIR /var/app_storage
