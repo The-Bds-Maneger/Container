@@ -31,7 +31,6 @@ BdsCore.downloadServer.DownloadServer(PlatformServer, ServerVersion === "latest"
   const { BACKUP_GIT_REPO, BACKUP_GIT_USERNAME, BACKUP_GIT_PASSTOKEN } = process.env;
   if (CronBackup.length >= 5 && 5 <= CronBackup.length) {
     const CronBackupCron = new CronJob(CronBackup.join(" "), async () => {
-      console.info("Backup started");
       await BdsCore.Backup.CreateBackup(false).then(BufferFile => fsPromise.writeFile(path.join(process.env.BACKUP_PATH, "latest_backup.zip"), BufferFile)).catch(e => console.error(e));
       if (BACKUP_GIT_REPO && BACKUP_GIT_USERNAME && BACKUP_GIT_PASSTOKEN) {
         await BdsCore.Backup.gitBackup({
@@ -42,7 +41,6 @@ BdsCore.downloadServer.DownloadServer(PlatformServer, ServerVersion === "latest"
           }
         }).catch(err => console.error(err));
       }
-      console.info("Backup finished");
     });
     CronBackupCron.start();
   }
