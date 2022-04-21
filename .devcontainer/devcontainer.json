@@ -4,7 +4,7 @@
   "remoteUser": "devcontainer",
   "containerUser": "devcontainer",
   "updateRemoteUserUID": false,
-  "postStartCommand": "screen -dm sudo startDocker",
+  "postCreateCommand": "startDocker npm install",
   "runArgs": [
     "--init",
     "--privileged"
