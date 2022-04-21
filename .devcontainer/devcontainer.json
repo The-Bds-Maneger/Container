@@ -1,17 +1,16 @@
 {
-  "name": "devContainerBdsCore",
-  "dockerFile": "Dockerfile",
-  "remoteUser": "gitpod",
-  "containerUser": "gitpod",
+  "name": "devContainerBds",
+  "image": "ghcr.io/the-bds-maneger/devcontainer_nodejs",
+  "remoteUser": "devcontainer",
+  "containerUser": "devcontainer",
   "updateRemoteUserUID": false,
-  "postCreateCommand": "npm install",
-  "postStartCommand": "screen -L -Logfile /tmp/dockerd.log -dm sudo dockerd",
+  "postStartCommand": "screen -dm sudo startDocker",
   "runArgs": [
     "--init",
     "--privileged"
   ],
   "mounts": [
-    "source=bdscore_dind,target=/var/lib/docker,type=volume"
+    "type=tmpfs,destination=/var/lib/docker"
   ],
   "extensions": [
     "GitHub.copilot-nightly",
