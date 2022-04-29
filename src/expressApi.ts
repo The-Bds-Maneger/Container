@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import express_rate_limit from "express-rate-limit";
 import { getSession } from "./start";
-import { Backup } from "@the-bds-maneger/core";
+import bdscore from "@the-bds-maneger/core";
 import path from "path";
 import fs from "fs";
 
@@ -69,7 +69,7 @@ app.get("/backup", auth, async ({res}) => {
   res.setHeader("Content-disposition", "attachment; filename="+fileName);
   res.setHeader("FileName", fileName);
   res.setHeader("Content-type", "application/zip");
-  res.send(await Backup.CreateBackup(false));
+  res.send(await bdscore.Backup.CreateBackup(false));
   return;
 });
 

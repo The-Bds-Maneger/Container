@@ -1,9 +1,10 @@
-import * as bdsCore from "@the-bds-maneger/core";
+import bdsCore from "@the-bds-maneger/core";
+import { Platform } from "@the-bds-maneger/core/dist/dts/globalType";
 import * as bdsCoreVersion from "@the-bds-maneger/server_versions";
 import { CronJob } from "cron";
 import StartServer, * as Start from "./start";
 
-export default function autoUpdate(Platform: bdsCore.bdsTypes.Platform, versionInit: string) {
+export default function autoUpdate(Platform: Platform, versionInit: string) {
   console.log("Auto Update is enabled.");
   const Cron = new CronJob("0 */1 * * * *", async () => {
     const latestVersion = await bdsCoreVersion.findUrlVersion(Platform, true);

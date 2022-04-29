@@ -20,8 +20,8 @@ RUN \
   apt update && \
   JAVAVERSIONS="$(apt search openjdk|grep '/'|grep 'openjdk-'|sed 's|/| |g'|awk '{print $1}'|grep 'jre'|sed -e 's|-jre.*||g'|uniq)";\
   case $JAVAVERSIONS in \
-    *17* ) apt install -y openjdk-17*;; \
-    *16* ) apt install -y openjdk-16*;; \
+    *17* ) apt install -y openjdk-17-*headless;; \
+    *16* ) apt install -y openjdk-16-*headless;; \
     *) echo "Unsupported Java Version, avaibles"; echo "$JAVAVERSIONS";exit 0;; \
   esac
 
@@ -38,7 +38,7 @@ esac
 VOLUME [ "/data" ]
 
 # App Workspace
-STOPSIGNAL SIGTERM
+STOPSIGNAL SIGINT
 ENTRYPOINT [ "node", "--trace-warnings", "dist/index.js" ]
 
 # Ports
@@ -57,7 +57,7 @@ EXTRA_PATH="/data/extra"
 
 # Server Settings
 ENV \
-DESCRIPTION="My Sample Server" \
+DESCRIPTION="My Server" \
 WORLD_NAME="My Map" \
 GAMEMODE="survival" \
 DIFFICULTY="normal" \
@@ -67,7 +67,7 @@ ALLOW_COMMADS="false"
 
 # Backup
 ENV \
-CRON_BACKUP="0 0 * * *" \
+CRON_BACKUP="0 0 0 * *" \
 BACKUP_GIT_REPO="" \
 BACKUP_GIT_USERNAME="" \
 BACKUP_GIT_PASSTOKEN=""
@@ -79,7 +79,7 @@ PLATFORM="bedrock" \
 AUTH_USER="admin" \
 AUTH_PASSWORD="admin"
 
-STOPSIGNAL SIGTERM
+STOPSIGNAL SIGINT
 WORKDIR /var/app_storage
 COPY package*.json ./
 RUN npm install

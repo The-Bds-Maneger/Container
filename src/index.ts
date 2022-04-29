@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-import { promises as fsPromise } from "fs";
-import path from "path";
-import * as BdsCore from "@the-bds-maneger/core";
-import { CronJob } from "cron";
+import BdsCore from "@the-bds-maneger/core";
 import autoUpdate from "./autoUpdate";
 import { listen } from "./expressApi";
 import start from "./start";
+import { Platform } from "@the-bds-maneger/core/dist/dts/globalType";
 
-const PlatformServer = (process.env.PLATFORM||"bedrock") as BdsCore.bdsTypes.Platform;
+const PlatformServer = (process.env.PLATFORM||"bedrock") as Platform;
 if (!(BdsCore.bdsTypes.PlatformArray.find(p => p === PlatformServer))) {
   console.error(`Platform ${PlatformServer} is not supported.`);
   process.exit(1);
@@ -26,24 +24,6 @@ BdsCore.downloadServer.DownloadServer(PlatformServer, ServerVersion === "latest"
     require_login: process.env.REQUIRED_LOGIN === "true",
     cheats_command: process.env.ALLOW_COMMADS === "true"
   });
-  // Cron Backup
-  const CronBackup = (process.env.CRON_BACKUP||"0 0 * * *").split(/\s+/);
-  const { BACKUP_GIT_REPO, BACKUP_GIT_USERNAME, BACKUP_GIT_PASSTOKEN } = process.env;
-  if (CronBackup.length >= 5 && 5 <= CronBackup.length) {
-    const CronBackupCron = new CronJob(CronBackup.join(" "), async () => {
-      await BdsCore.Backup.CreateBackup(false).then(BufferFile => fsPromise.writeFile(path.join(process.env.BACKUP_PATH, "latest_backup.zip"), BufferFile)).catch(e => console.error(e));
-      if (BACKUP_GIT_REPO && BACKUP_GIT_USERNAME && BACKUP_GIT_PASSTOKEN) {
-        await BdsCore.Backup.gitBackup({
-          repoUrl: BACKUP_GIT_REPO,
-          Auth: {
-            PasswordToken: BACKUP_GIT_PASSTOKEN,
-            Username: (!!BACKUP_GIT_USERNAME)?BACKUP_GIT_USERNAME:undefined
-          }
-        }).catch(err => console.error(err));
-      }
-    });
-    CronBackupCron.start();
-  }
   start(PlatformServer);
   return listen();
 });

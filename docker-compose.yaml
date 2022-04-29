@@ -2,6 +2,7 @@ version: "3.9"
 volumes:
   Worlds:
   Logs:
+  Backups:
 services:
   bdscore:
     container_name: bds_maneger_core
@@ -11,6 +12,7 @@ services:
     volumes:
       - Worlds:/data/worlds
       - Logs:/data/logs
+      - Backups:/data/backups
     environment:
       DESCRIPTION: "Docker Test"
       WORLD_NAME: "Docker Run Test"
