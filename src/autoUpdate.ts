@@ -11,7 +11,7 @@ export default function autoUpdate(Platform: Platform, versionInit: string) {
     if (latestVersion.version === versionInit) return;
     console.log("Upgrading %s from %s to %s", Platform, versionInit, latestVersion.version);
     Start.LockExit();
-    await (Start.getSession()).stop();
+    await (Start.getSession()).commands.stop();
     await bdsCore.downloadServer.DownloadServer(Platform, latestVersion.version);
     versionInit = latestVersion.version;
     Start.UnlockExit();

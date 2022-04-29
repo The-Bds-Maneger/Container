@@ -11,8 +11,8 @@ export const UnlockExit = () => lockExitVar = false;
 
 export default async function start(Platform: Platform) {
   Session = await bdscore.Server.Start(Platform, {storageOnlyWorlds: true});
-  Session.logRegister("all", data => console.log(data));
-  process.on("SIGINT", () => Session.stop());
+  Session.log.on("all", data => console.log(data));
+  process.on("SIGINT", () => Session.commands.stop());
   Session.onExit(code => {
     if (lockExitVar) return;
     process.exit(code);
