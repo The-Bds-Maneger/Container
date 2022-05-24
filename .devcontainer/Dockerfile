@@ -24,6 +24,13 @@ RUN curl https://get.docker.com | sh && \
   wget -q https://github.com/docker/compose/releases/download/${compose_version}/docker-compose-`uname -s`-`uname -m` -O /usr/local/bin/docker-compose && \
   chmod +x -v /usr/local/bin/docker-compose
 
+# Install minikube and kubectl
+RUN curl -Lo minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-$(dpkg --print-architecture)" && \
+  chmod +x minikube && mv minikube /usr/bin && \
+  minikube config set driver docker && \
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$(dpkg --print-architecture)/kubectl" && \
+  chmod +x kubectl && mv kubectl /usr/bin
+
 # Add non root user
 ARG USERNAME=gitpod
 ARG USER_UID=1000
@@ -44,31 +51,31 @@ RUN yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
   git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
   sed -e 's|ZSH_THEME=".*"|ZSH_THEME="strug"|g' -i ~/.zshrc && \
-  sed -e 's|plugins=(.*)|plugins=(git docker zsh-syntax-highlighting zsh-autosuggestions)|g' -i ~/.zshrc
+  sed -e 's|plugins=(.*)|plugins=(git docker kubectl zsh-syntax-highlighting zsh-autosuggestions)|g' -i ~/.zshrc
 
 # Create Start Script
-ENV DOCKERD_ARGS=""
+ARG DOCKERD_ARGS=""
+ARG MINIKUBE_ARGS="--driver=docker"
 RUN (\
 echo '#''!/bin/bash';\
 echo "set -e";\
 echo 'if ! [[ -f "/var/run/docker.sock" ]];then';\
 echo "  (sudo dockerd ${DOCKERD_ARGS}) &";\
+echo "  (minikube start ${MINIKUBE_ARGS}) &";\
 echo "fi";\
 echo 'if ! [[ -z "$@" ]]; then';\
 echo '  sh -c "$@"';\
 echo "fi";\
 echo "";\
 echo "while true; do";\
-echo "  if ps -ef | grep -v grep | grep -q dockerd; then";\
-echo '    echo "Docker daemon is running"';\
-echo "  elif docker info &> /dev/null; then";\
-echo '    echo "Docker daemon is running"';\
-echo "  else";\
+echo "  if ! ps -ef | grep -v grep | grep -q dockerd; then";\
+echo "    break";\
+echo "  elif ! docker info &> /dev/null; then";\
 echo "    break";\
 echo "  fi";\
 echo "  sleep 4s";\
 echo "done";\
 echo "";\
-echo "echo Dockerd stopped";\
+echo "echo stopped";\
 echo "exit 2")|sudo tee /usr/local/bin/start.sh && sudo chmod +x /usr/local/bin/start.sh
 ENTRYPOINT [ "/usr/local/bin/start.sh" ]
