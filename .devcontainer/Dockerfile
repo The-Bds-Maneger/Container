@@ -67,15 +67,5 @@ echo 'if ! [[ -z "$@" ]]; then';\
 echo '  sh -c "$@"';\
 echo "fi";\
 echo "";\
-echo "while true; do";\
-echo "  if ! ps -ef | grep -v grep | grep -q dockerd; then";\
-echo "    break";\
-echo "  elif ! docker info &> /dev/null; then";\
-echo "    break";\
-echo "  fi";\
-echo "  sleep 4s";\
-echo "done";\
-echo "";\
-echo "echo stopped";\
-echo "exit 2")|sudo tee /usr/local/bin/start.sh && sudo chmod +x /usr/local/bin/start.sh
+echo "sleep infinity")|sudo tee /usr/local/bin/start.sh && sudo chmod +x /usr/local/bin/start.sh
 ENTRYPOINT [ "/usr/local/bin/start.sh" ]
