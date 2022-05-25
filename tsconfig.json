@@ -15,8 +15,9 @@
     "allowJs": true,
     "target": "ES6",
     "paths": {
-      "@/*": ["./node_modules/@*"],
-      "@*": ["./node_modules/@*"]
+      "@the-bds-maneger/core": ["./node_modules/@the-bds-maneger/core/src"],
+      "@the-bds-maneger/core/*": ["./node_modules/@the-bds-maneger/core/src/*"],
+      "@/*": ["./node_modules/@*"]
     }
   }
 }

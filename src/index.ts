@@ -3,7 +3,7 @@ import BdsCore from "@the-bds-maneger/core";
 import autoUpdate from "./autoUpdate";
 import { listen } from "./expressApi";
 import start from "./start";
-import { Platform } from "@the-bds-maneger/core/dist/dts/globalType";
+import { Platform } from "@the-bds-maneger/core/globalType";
 
 const PlatformServer = (process.env.PLATFORM||"bedrock") as Platform;
 if (!(BdsCore.bdsTypes.PlatformArray.find(p => p === PlatformServer))) {

@@ -34,13 +34,6 @@ case $(uname -m) in \
   * ) apt update; apt install -y qemu-user-static unzip; wget -q "https://github.com/The-Bds-Maneger/external_files/raw/main/Linux/libs_amd64.zip" -O /tmp/tmp.zip; unzip -o /tmp/tmp.zip -d /; rm -rfv /tmp/tmp.zip; apt remove -y --purge unzip;; \
 esac
 
-# Create Volume to Storage Server
-VOLUME [ "/data" ]
-
-# App Workspace
-STOPSIGNAL SIGINT
-ENTRYPOINT [ "node", "--trace-warnings", "dist/index.js" ]
-
 # Ports
 EXPOSE 3000/tcp
 EXPOSE 19132/udp
@@ -48,38 +41,26 @@ EXPOSE 19133/udp
 EXPOSE 25565/tcp
 EXPOSE 25566/tcp
 
-# Default ENVs
-ENV \
-WORLD_STORAGE="/data/worlds" \
-BACKUP_PATH="/data/backups" \
-LOG_PATH="/data/logs" \
-EXTRA_PATH="/data/extra"
+# Default Run
+VOLUME [ "/data" ]
+STOPSIGNAL SIGINT
+ENTRYPOINT [ "bash", "-c", "WORLD_STORAGE='/data/worlds' BACKUP_PATH='/data/backups' LOG_PATH='/data/logs' EXTRA_PATH='/data/extra' node --trace-warnings dist/index.js" ]
 
 # Server Settings
 ENV \
-DESCRIPTION="My Server" \
 WORLD_NAME="My Map" \
+DESCRIPTION="My Server" \
 GAMEMODE="survival" \
 DIFFICULTY="normal" \
 MAXPLAYERS="5" \
 REQUIRED_LOGIN="false" \
-ALLOW_COMMADS="false"
-
-# Backup
-ENV \
-CRON_BACKUP="0 0 0 * *" \
-BACKUP_GIT_REPO="" \
-BACKUP_GIT_USERNAME="" \
-BACKUP_GIT_PASSTOKEN=""
-
-# Bds Core Settings
-ENV \
+ALLOW_COMMADS="false" \
+CRON_BACKUP="true" \
 VERSION="latest" \
 PLATFORM="bedrock" \
 AUTH_USER="admin" \
 AUTH_PASSWORD="admin"
 
-STOPSIGNAL SIGINT
 WORKDIR /var/app_storage
 COPY package*.json ./
 RUN npm install

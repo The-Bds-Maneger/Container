@@ -47,7 +47,7 @@ const auth = (req: Request, res: Response, next: NextFunction)=>{
 app.get("/", ({res}) => {
   const Session = getSession();
   return res.json({
-    Seed: Session.seed,
+    Seed: Session.seed||null,
     ports: Session.ports()
   });
 });
@@ -57,7 +57,7 @@ app.get("/log", auth, ({res}) => {
   res.setHeader("Content-Type", "text/plain");
   const logs = fs.readdirSync(process.env.LOG_PATH).slice(5).map(file => ({
     file,
-    content: Buffer.from(fs.readFileSync(path.join(process.env.LOG_PATH, file), "utf8")).toString("base64")
+    content: fs.readFileSync(path.join(process.env.LOG_PATH, file)).toString("base64")
   }));
   res.json(logs);
   return;
@@ -69,7 +69,7 @@ app.get("/backup", auth, async ({res}) => {
   res.setHeader("Content-disposition", "attachment; filename="+fileName);
   res.setHeader("FileName", fileName);
   res.setHeader("Content-type", "application/zip");
-  res.send(await bdscore.Backup.CreateBackup(false));
+  res.send(await bdscore.backup.zip.createZipBackup());
   return;
 });
 

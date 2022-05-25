@@ -58,7 +58,6 @@ ARG DOCKERD_ARGS=""
 ARG MINIKUBE_ARGS="--driver=docker"
 RUN (\
 echo '#''!/bin/bash';\
-echo "set -e";\
 echo 'if ! [[ -f "/var/run/docker.sock" ]];then';\
 echo "  (sudo dockerd ${DOCKERD_ARGS}) &";\
 echo "  (minikube start ${MINIKUBE_ARGS}) &";\
@@ -67,5 +66,7 @@ echo 'if ! [[ -z "$@" ]]; then';\
 echo '  sh -c "$@"';\
 echo "fi";\
 echo "";\
-echo "sleep infinity")|sudo tee /usr/local/bin/start.sh && sudo chmod +x /usr/local/bin/start.sh
+echo "sleep infinity") | sudo tee /usr/local/bin/start.sh && sudo chmod +x /usr/local/bin/start.sh
+
+# Start Script
 ENTRYPOINT [ "/usr/local/bin/start.sh" ]

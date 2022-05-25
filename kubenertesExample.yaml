@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bdsmaneger
+  labels:
+    app: bdsmaneger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bdsmaneger
+  template:
+    metadata:
+      labels:
+        app: bdsmaneger
+    spec:
+      containers:
+        - name: bdsmaneger-server
+          image: ghcr.io/the-bds-maneger/container:local
+          imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+            - containerPort: 19132
+              protocol: UDP
+            - containerPort: 19133
+              protocol: UDP

@@ -6,6 +6,7 @@ volumes:
 services:
   bdscore:
     container_name: bds_maneger_core
+    image: the-bds-maneger/container:local
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,7 +23,7 @@ services:
       PLAYERS: "5"
       BDS_VERSION: "latest"
       SERVER: "bedrock"
-      CRON_BACKUP: "*/1 * * * *"
+      CRON_BACKUP: "true"
     ports:
       - 3000:3000/tcp
       - 19132:19132/udp

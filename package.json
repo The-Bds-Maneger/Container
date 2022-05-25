@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "start:tsc": "npm run build && node dist/index.js",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "minikube:build": "docker-compose build && minikube image load the-bds-maneger/container:local"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,7 @@
     "url": "https://github.com/The-Bds-Maneger/Container/issues"
   },
   "dependencies": {
-    "@the-bds-maneger/core": "^2.1.1",
+    "@the-bds-maneger/core": "^3.0.2",
     "@the-bds-maneger/server_versions": "^2.1.2",
     "cors": "^2.8.5",
     "cron": "^2.0.0",

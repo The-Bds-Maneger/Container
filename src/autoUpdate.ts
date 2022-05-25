@@ -1,5 +1,5 @@
 import bdsCore from "@the-bds-maneger/core";
-import { Platform } from "@the-bds-maneger/core/dist/dts/globalType";
+import { Platform } from "@the-bds-maneger/core/globalType";
 import * as bdsCoreVersion from "@the-bds-maneger/server_versions";
 import { CronJob } from "cron";
 import StartServer, * as Start from "./start";
