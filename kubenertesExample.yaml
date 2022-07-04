@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Deployment
 metadata:
   name: bdsmaneger
@@ -16,15 +16,34 @@ spec:
     spec:
       containers:
         - name: bdsmaneger-server
-          image: ghcr.io/the-bds-maneger/container:local
-          imagePullPolicy: Never
+          image: ghcr.io/the-bds-maneger/container:latest
+          imagePullPolicy: Always
           resources:
             limits:
-              cpu: "2"
-              memory: "4Gi"
+              cpu: "8"
+              memory: "16Gi"
             requests:
               cpu: "2"
               memory: "4Gi"
+          env:
+            - name: DESCRIPTION
+              value: "Docker Test"
+            - name: WORLD_NAME
+              value: "Docker Run Test"
+            - name: GAMEMODE
+              value: "survival"
+            - name: DIFFICULTY
+              valeue: "normal"
+            - name: XBOX_ACCOUNT
+              value: "false"
+            - name: PLAYERS
+              value: "5"
+            - name: BDS_VERSION
+              value: "latest"
+            - name: SERVER
+              value: "bedrock"
+            - name: CRON_BACKUP
+              value: "true"
           ports:
             - containerPort: 3000
               protocol: TCP

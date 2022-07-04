@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import express_rate_limit from "express-rate-limit";
 import { getSession } from "./start";
-import bdscore from "@the-bds-maneger/core";
+import * as bdscore from "@the-bds-maneger/core";
 import path from "path";
 import fs from "fs";
 
@@ -48,7 +48,7 @@ app.get("/", ({res}) => {
   const Session = getSession();
   return res.json({
     Seed: Session.seed||null,
-    ports: Session.ports()
+    ports: Session.ports
   });
 });
 
@@ -64,17 +64,16 @@ app.get("/log", auth, ({res}) => {
 });
 
 // Backup
-app.get("/backup", auth, async ({res}) => {
+app.get("/backup", auth, ({res}) => {
   const fileName = (`${new Date().toString().replace(/[-\(\)\:\s+]/gi, "_")}.zip`).replace(/__/gi, "_");
   res.setHeader("Content-disposition", "attachment; filename="+fileName);
   res.setHeader("FileName", fileName);
   res.setHeader("Content-type", "application/zip");
-  res.send(await bdscore.backup.zip.createZipBackup());
-  return;
+  return bdscore[(process.env.PLATFORM) as bdscore.globalType.Platform].backup.CreateBackup().then(buf => res.send(buf));
 });
 
 // Player
-app.get("/player", defaultRateLimit, ({res}) => res.json((getSession()).getPlayer()));
+app.get("/player", defaultRateLimit, ({res}) => res.json((getSession()).Player));
 
 // Command
 const Commands = [];
