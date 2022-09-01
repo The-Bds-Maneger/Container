@@ -1,18 +1,25 @@
 import * as bdscore from "@the-bds-maneger/core";
-import { BdsSession } from "@the-bds-maneger/core/globalType";
+import { actions } from "@the-bds-maneger/core/src/globalPlatfroms";
 
-let Session: BdsSession;
+let Session: actions;
 let lockExitVar = false;
 export const getSession = () => Session;
 export const LockExit = () => lockExitVar = true;
 export const UnlockExit = () => lockExitVar = false;
 
-export default async function start(Platform: bdscore.globalType.Platform) {
-  Session = await bdscore[Platform].server.startServer();
-  Session.server.on("log", console.log);
-  process.on("SIGINT", () => Session.commands.stop());
-  if ((process.env.CRON_BACKUP||"").toLowerCase() === "true") Session.server.once("closed", () => (Session.creteBackup("0 0/6 * * *", {type: "zip"})).stop);
-  Session.server.once("closed", code => {
+export default async function start(Platform: string) {
+  if (Platform === "bedrock") Session = await bdscore.Bedrock.startServer();
+  else if (Platform === "pocketmine") Session = await bdscore.PocketmineMP.startServer();
+  else if (Platform === "java") Session = await bdscore.Java.startServer();
+  else if (Platform === "spigot") Session = await bdscore.Spigot.startServer();
+  else {
+    console.log("Invalid platform");
+    process.exit(1);
+  }
+  Session.on("log_stdout", console.log);
+  Session.on("log_stderr", console.log);
+  process.on("SIGINT", () => Session.stopServer());
+  Session.once("exit", ({code}) => {
     if (lockExitVar) return;
     process.exit(code);
   });

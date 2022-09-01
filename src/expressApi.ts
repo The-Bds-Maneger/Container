@@ -5,6 +5,7 @@ import { getSession } from "./start";
 import * as bdscore from "@the-bds-maneger/core";
 import path from "path";
 import fs from "fs";
+import { BdsCorePlatforms } from "@the-bds-maneger/server_versions";
 
 // Create Express API
 const app = express();
@@ -47,8 +48,7 @@ const auth = (req: Request, res: Response, next: NextFunction)=>{
 app.get("/", ({res}) => {
   const Session = getSession();
   return res.json({
-    Seed: Session.seed||null,
-    ports: Session.ports
+    ports: Session.portListening
   });
 });
 
@@ -69,11 +69,11 @@ app.get("/backup", auth, ({res}) => {
   res.setHeader("Content-disposition", "attachment; filename="+fileName);
   res.setHeader("FileName", fileName);
   res.setHeader("Content-type", "application/zip");
-  return bdscore[(process.env.PLATFORM) as bdscore.globalType.Platform].backup.CreateBackup().then(buf => res.send(buf));
+  return bdscore[(process.env.PLATFORM) as BdsCorePlatforms].backup.CreateBackup().then(buf => res.send(buf));
 });
 
 // Player
-app.get("/player", defaultRateLimit, ({res}) => res.json((getSession()).Player));
+app.get("/player", defaultRateLimit, ({res}) => res.json((getSession()).playerActions));
 
 // Command
 const Commands = [];
@@ -88,7 +88,7 @@ app.route("/command").get(auth, ({res}) => res.sendFile(path.join(__dirname, "..
     ip: req.ip,
     command: Command,
   });
-  (getSession()).commands.execCommand(Command);
+  (getSession()).runCommand(Command);
   if (returnPage) res.redirect("/command");
   else res.sendStatus(200);
   return;
