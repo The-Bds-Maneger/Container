@@ -27,7 +27,7 @@
     "url": "https://github.com/The-Bds-Maneger/Container/issues"
   },
   "dependencies": {
-    "@the-bds-maneger/core": "^4.0.1",
+    "@the-bds-maneger/core": "^4.5.3",
     "@the-bds-maneger/server_versions": "^2.3.1",
     "cors": "^2.8.5",
     "cron": "^2.1.0",
